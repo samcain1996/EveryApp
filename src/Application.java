@@ -7,11 +7,12 @@ public class Application {
 		this.company = company;
 	}
 	
-	public String getName() {
-		return name;
-	}
+	public String getName() { return name; }
 	
-	public String getCompany() {
-		return company;
+	public String getCompany() { return company; }
+	
+	@Override
+	public String toString() {
+		return name + "    " + company;
 	}
 }

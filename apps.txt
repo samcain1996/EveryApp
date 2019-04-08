@@ -1,4 +1,4 @@
-App1 MyComp
-App2 Comp2
-Cool AppMe
-SD	JDF
+App1 1Comp
+App2 Company2
+MyApp MyComp
+AppEtc AppCompany
