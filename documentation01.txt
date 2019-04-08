@@ -1,0 +1,9 @@
+Laura Jacob -- 4/8/19 -- Week 4 Delivs
+
+So far, we have 4 apps read from apps.txt file which will be read into the program and shown as buttons. The apps were given arbitrary application and company names for simplicity.
+
+In the src folder, we have the main.java, Application.java, Database.java, and GUI.java files. 
+The Application class has two private strings -- name and company -- a constructor method, 2 getters, and a toString method. 
+The Database class loads the apps.txt (and throws exception) and stores the apps into an ArrayList. The class includes a public boolean add() method which adds the app to the database if not already in the database. There is also a public void dete() method which deletes the application when called and updates database. The method getApps() returns an array list of the apps currently stored. There is also an @Override toString() method in this class.
+The GUI class extends JFrame and outlines JPanel, JButton, JTextField, JList, ArrayList, DefaultListModel and Database attributes. A public GUI constructor is created and filled. A private void is used for setInitialAttributes() method as well as a setDisplayAttributes() and refreshList()  method. There are 4 private listener classes in the GUI file: loadListener, filterListener, sortNameListener, and sortCompanyListener which all implement ActionListener class.
+In the main file, a new GUI is created and a FileNotFoundException is thrown.        
