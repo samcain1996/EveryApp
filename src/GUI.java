@@ -1,14 +1,8 @@
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -17,7 +11,7 @@ import javax.swing.*;
 public class GUI extends JFrame {
 	private JPanel panel;
 	private JButton load;
-	private JTextField tBox;
+	private JTextField tBox, addCommentBox;
 	private JList<Application> list;
 	private ArrayList<Application> appArray;
 	private DefaultListModel<Application> model;
@@ -32,7 +26,7 @@ public class GUI extends JFrame {
 		setVisible(true);
 		add(panel);
 	}
-	
+
 	private void setInitialAttributes() {
 		setSize(600, 480);
 		setTitle("EveryApp");
@@ -64,11 +58,12 @@ public class GUI extends JFrame {
 	}
 	
 	private void setDisplayAttributes() {
-		panel.remove(load);
+		panel.removeAll();
 		
 		ActionListener fListener = new filterListener();
 		ActionListener sNListener = new sortNameListener();
 		ActionListener sCListener = new sortCompanyListener();
+		ActionListener vCListener = new viewCommentsListener();
 		
 		// Change location and clear textbox
 		tBox.setText("");
@@ -92,23 +87,77 @@ public class GUI extends JFrame {
 		sortCompany.setText("Company");
 		sortCompany.addActionListener(sCListener);
 		
+		JButton viewComments = new JButton();
+		viewComments.setLocation(100, 400);
+		viewComments.setSize(200, 25);
+		viewComments.setText("View Comments");
+		viewComments.addActionListener(vCListener);
+		
 		model = new DefaultListModel<Application>();
 		for (Application app : db.getApps()) {
 			model.addElement(app);
 		}
-		list = new JList<Application>(model);    
+		list = new JList<Application>(model);   
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 	    JScrollPane scrollList = new JScrollPane(list);   
 	    scrollList.setLocation(0, 100);
 	    scrollList.setSize(500, 300);
 		
 		panel.add(filter);
+		panel.add(viewComments);
 		panel.add(scrollList);
 		panel.add(sortCompany);
 		panel.add(sortName);
+		panel.add(tBox);
 		revalidate();
 		repaint();
 	}
+	
+	private void commentView(Application app) {
+		panel.removeAll();
+		
+		ActionListener back = new commentsBackListener();
+		ActionListener addComment = new addCommentListener();
+		
+		JLabel appName = new JLabel();
+		appName.setLocation(25, 50);
+		appName.setText(app.getName());
+		appName.setSize(app.getName().length() * 10, 25);
+
+		int x = 25;
+		int y = 75;
+		for (String comment : app.getComments()) {
+			JLabel label = new JLabel();
+			label.setLocation(x, y);
+			label.setText(comment);
+			label.setSize(comment.length() * 10, 25);
+			y+= 25;
+			panel.add(label);
+		}
+		
+		JButton backButton = new JButton();
+		backButton.setSize(100, 25);
+		backButton.setLocation(450, 25);
+		backButton.setText("Back");
+		backButton.addActionListener(back);
+		
+		JButton addCommentButton = new JButton();
+		addCommentButton.setSize(200, 25);
+		addCommentButton.setLocation(300, 400);
+		addCommentButton.setText("Add Comment");
+		addCommentButton.addActionListener(addComment);
+		
+		tBox.setLocation(100, 400);
+
+		panel.add(backButton);
+		panel.add(appName);
+		panel.add(tBox);
+		panel.add(addCommentButton);
+		revalidate();
+		repaint();
+	}
+	
 	
 	private class loadListener implements ActionListener {
 
@@ -172,6 +221,35 @@ public class GUI extends JFrame {
 			});
 			refreshList();
 		}
+	}
+	
+	private class viewCommentsListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			commentView(list.getSelectedValue());
+		}
+		
+	}
+	
+	private class commentsBackListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			setDisplayAttributes();
+		}
+		
+	}
+	
+	private class addCommentListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if (!list.getSelectedValue().getComments().contains(tBox.getText())) {
+					list.getSelectedValue().addComment(tBox.getText());
+			}
+		}
+		
 	}
 	
 }
