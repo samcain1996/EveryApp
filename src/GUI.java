@@ -15,6 +15,7 @@ public class GUI extends JFrame {
 	private JList<Application> list;
 	private ArrayList<Application> appArray;
 	private DefaultListModel<Application> model;
+	private DefaultListModel<String> comments;
 	private Database db;
 	
 	public GUI() {
@@ -28,7 +29,7 @@ public class GUI extends JFrame {
 	}
 
 	private void setInitialAttributes() {
-		setSize(600, 480);
+		setSize(640, 480);
 		setTitle("EveryApp");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -51,9 +52,9 @@ public class GUI extends JFrame {
 		panel.add(tBox);
 	}
 	
-	private void refreshList() {
-		for (Application app : db.getApps()) {
-			model.addElement(app);
+	private void refreshList(DefaultListModel lModel, ArrayList src) {
+		for (Object thing : src) {
+			lModel.addElement(thing);
 		}
 	}
 	
@@ -120,21 +121,21 @@ public class GUI extends JFrame {
 		ActionListener back = new commentsBackListener();
 		ActionListener addComment = new addCommentListener();
 		
-		JLabel appName = new JLabel();
-		appName.setLocation(25, 50);
-		appName.setText(app.getName());
-		appName.setSize(app.getName().length() * 10, 25);
+		JLabel appLabel = new JLabel();
+		appLabel.setLocation(25, 50);
+		appLabel.setText(app.getName());
+		appLabel.setSize(app.getName().length() * 10, 25);
 
-		int x = 25;
-		int y = 75;
+		comments = new DefaultListModel<String>();
 		for (String comment : app.getComments()) {
-			JLabel label = new JLabel();
-			label.setLocation(x, y);
-			label.setText(comment);
-			label.setSize(comment.length() * 10, 25);
-			y+= 25;
-			panel.add(label);
+			comments.addElement(comment);
 		}
+		
+		JList<String> commentList = new JList<String>(comments);
+		
+		JScrollPane scrollList = new JScrollPane(commentList);
+	    scrollList.setLocation(0, 100);
+	    scrollList.setSize(500, 300);
 		
 		JButton backButton = new JButton();
 		backButton.setSize(100, 25);
@@ -144,14 +145,21 @@ public class GUI extends JFrame {
 		
 		JButton addCommentButton = new JButton();
 		addCommentButton.setSize(200, 25);
-		addCommentButton.setLocation(300, 400);
+		addCommentButton.setLocation(210, 400);
 		addCommentButton.setText("Add Comment");
 		addCommentButton.addActionListener(addComment);
 		
-		tBox.setLocation(100, 400);
+		JButton removeCommentButton = new JButton();
+		removeCommentButton.setSize(200, 25);
+		removeCommentButton.setLocation(420, 400);
+		removeCommentButton.setText("Remove Comment");
+		
+		tBox.setLocation(10, 400);
 
 		panel.add(backButton);
-		panel.add(appName);
+		panel.add(removeCommentButton);
+		panel.add(scrollList);
+		panel.add(appLabel);
 		panel.add(tBox);
 		panel.add(addCommentButton);
 		revalidate();
@@ -189,7 +197,6 @@ public class GUI extends JFrame {
 					model.addElement(app);
 				}
 			}
-			// refreshList();
 		}
 	}
 	
@@ -204,7 +211,7 @@ public class GUI extends JFrame {
 						return  app1.getName().compareTo(app2.getName());
 			    }
 			});
-			refreshList();
+			refreshList(model, db.getApps());
 		}
 	}
 	
@@ -219,7 +226,7 @@ public class GUI extends JFrame {
 						return  app1.getCompany().compareTo(app2.getCompany());
 			    }
 			});
-			refreshList();
+			refreshList(model, db.getApps());
 		}
 	}
 	
@@ -246,8 +253,17 @@ public class GUI extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (!list.getSelectedValue().getComments().contains(tBox.getText())) {
-					list.getSelectedValue().addComment(tBox.getText());
+				list.getSelectedValue().addComment(tBox.getText());
+				refreshList(comments, list.getSelectedValue().getComments());
 			}
+		}
+	}
+	
+	private class removeCommentListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
 		}
 		
 	}
