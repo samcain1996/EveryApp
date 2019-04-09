@@ -14,6 +14,10 @@ public class Application {
 		comments.add(comment);
 	}
 	
+	public void removeComment(String comment) {
+		comments.remove(comment);
+	}
+	
 	public String getName() { return name; }
 	
 	public String getCompany() { return company; }

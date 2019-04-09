@@ -9,11 +9,10 @@ import java.util.Comparator;
 import javax.swing.*;
 
 public class GUI extends JFrame {
-	private JPanel panel;
-	private JButton load;
-	private JTextField tBox, addCommentBox;
-	private JList<Application> list;
-	private ArrayList<Application> appArray;
+	private JPanel panel; // Panel to add components to
+	private JTextField tBox; // Multipurpose textbox
+	private JList<Application> list; // List containing all apps
+	private JList<String> commentList;
 	private DefaultListModel<Application> model;
 	private DefaultListModel<String> comments;
 	private Database db;
@@ -33,8 +32,7 @@ public class GUI extends JFrame {
 		setTitle("EveryApp");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		appArray = new ArrayList<Application>();
-		
+		JButton load = new JButton();
 		load = new JButton();
 		load.setLocation(100, 100);
 		load.setSize(100, 25);
@@ -53,12 +51,13 @@ public class GUI extends JFrame {
 	}
 	
 	private void refreshList(DefaultListModel lModel, ArrayList src) {
+		lModel.clear();
 		for (Object thing : src) {
 			lModel.addElement(thing);
 		}
 	}
 	
-	private void setDisplayAttributes() {
+	private void displayApps() {
 		panel.removeAll();
 		
 		ActionListener fListener = new filterListener();
@@ -104,6 +103,7 @@ public class GUI extends JFrame {
 	    JScrollPane scrollList = new JScrollPane(list);   
 	    scrollList.setLocation(0, 100);
 	    scrollList.setSize(500, 300);
+	    scrollList.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		panel.add(filter);
 		panel.add(viewComments);
@@ -120,6 +120,7 @@ public class GUI extends JFrame {
 		
 		ActionListener back = new commentsBackListener();
 		ActionListener addComment = new addCommentListener();
+		ActionListener removeComment = new removeCommentListener();
 		
 		JLabel appLabel = new JLabel();
 		appLabel.setLocation(25, 50);
@@ -131,11 +132,12 @@ public class GUI extends JFrame {
 			comments.addElement(comment);
 		}
 		
-		JList<String> commentList = new JList<String>(comments);
+		commentList = new JList<String>(comments);
 		
 		JScrollPane scrollList = new JScrollPane(commentList);
 	    scrollList.setLocation(0, 100);
 	    scrollList.setSize(500, 300);
+	    scrollList.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		JButton backButton = new JButton();
 		backButton.setSize(100, 25);
@@ -153,6 +155,7 @@ public class GUI extends JFrame {
 		removeCommentButton.setSize(200, 25);
 		removeCommentButton.setLocation(420, 400);
 		removeCommentButton.setText("Remove Comment");
+		removeCommentButton.addActionListener(removeComment);
 		
 		tBox.setLocation(10, 400);
 
@@ -176,7 +179,7 @@ public class GUI extends JFrame {
 			if (file.exists()) {
 				try {
 					db = new Database(tBox.getText());
-					setDisplayAttributes();
+					displayApps();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -243,7 +246,7 @@ public class GUI extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			setDisplayAttributes();
+			displayApps();
 		}
 		
 	}
@@ -263,7 +266,8 @@ public class GUI extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+			list.getSelectedValue().removeComment(commentList.getSelectedValue());
+			refreshList(comments, list.getSelectedValue().getComments());
 		}
 		
 	}
