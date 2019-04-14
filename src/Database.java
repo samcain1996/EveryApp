@@ -15,6 +15,7 @@ public class Database {
 	
 	/**
 	 * Create database from file
+	 * 
 	 * @param file file to load database from
 	 * @throws FileNotFoundException
 	 */
@@ -25,6 +26,7 @@ public class Database {
 	
 	/**
 	 * Loads database from file 
+	 * 
 	 * @param filePath path of file
 	 * @throws FileNotFoundException
 	 */
@@ -43,6 +45,7 @@ public class Database {
 	
 	/**
 	 * Attempts to add entry to database
+	 * 
 	 * @param name name of application
 	 * @param company name of company
 	 * @return whether adding was successful
@@ -60,6 +63,7 @@ public class Database {
 	
 	/**
 	 * Deletes entry from database
+	 * 
 	 * @param name name of application to delete
 	 * @return whether application is able to be deleted
 	 */
@@ -67,6 +71,10 @@ public class Database {
 		apps.remove(new Application(name, company));
 	}
 	
+	/**
+	 * Getter for all Applications in database
+	 * @return ArrayList of all Applications
+	 */
 	public ArrayList<Application> getApps() { return apps; }
 	
 	@Override

@@ -17,6 +17,9 @@ public class GUI extends JFrame {
 	private DefaultListModel<String> comments;
 	private Database db;
 	
+	/**
+	 * Constructor for GUI
+	 */
 	public GUI() {
 		panel = new JPanel();
 		setInitialAttributes();	
@@ -27,6 +30,9 @@ public class GUI extends JFrame {
 		add(panel);
 	}
 
+	/**
+	 * Sets GUI attributes for start screen
+	 */
 	private void setInitialAttributes() {
 		setSize(640, 480);
 		setTitle("EveryApp");
@@ -50,6 +56,12 @@ public class GUI extends JFrame {
 		panel.add(tBox);
 	}
 	
+	/**
+	 * Refreshes a list after it is modified
+	 * 
+	 * @param lModel the ListModel that is being modified
+	 * @param src the ArrayList from which lModel gets its elements
+	 */
 	private void refreshList(DefaultListModel lModel, ArrayList src) {
 		lModel.clear();
 		for (Object thing : src) {
@@ -57,6 +69,9 @@ public class GUI extends JFrame {
 		}
 	}
 	
+	/*
+	 * Sets GUI attributes for displaying apps
+	 */
 	private void displayApps() {
 		panel.removeAll();
 		
@@ -115,6 +130,11 @@ public class GUI extends JFrame {
 		repaint();
 	}
 	
+	/**
+	 * Sets GUI attributes when displaying the comments of an app
+	 * 
+	 * @param app Application that is being viewed
+	 */
 	private void commentView(Application app) {
 		panel.removeAll();
 		
@@ -168,7 +188,6 @@ public class GUI extends JFrame {
 		revalidate();
 		repaint();
 	}
-	
 	
 	private class loadListener implements ActionListener {
 
