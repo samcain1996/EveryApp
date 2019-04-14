@@ -51,6 +51,6 @@ public class Application {
 	
 	@Override
 	public String toString() {
-		return name + "    " + company;
+		return name + "\t" + company;
 	}
 }
