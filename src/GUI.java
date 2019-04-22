@@ -2,15 +2,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
 
 import javax.swing.*;
+import javax.xml.bind.DatatypeConverter;
 
 public class GUI extends JFrame {
 	private JPanel panel; // Panel to add components to
-	private JTextField tBox; // Multipurpose textbox
+	private JTextField tBox, passTBox; // Multipurpose textbox
 	private JList<Application> list; // List containing all apps
 	private JList<String> commentList;
 	private DefaultListModel<Application> model;
@@ -29,6 +36,68 @@ public class GUI extends JFrame {
 		setVisible(true);
 		add(panel);
 	}
+	
+	public void logIn() {
+		panel.removeAll();
+		
+		ActionListener lIListener = new logInListener();
+		ActionListener createListener = new createAccountFormListener();
+		
+		JButton createButton = new JButton();
+		createButton.setText("Create Account");
+		createButton.setSize(200, 25);
+		createButton.setLocation(100, 300);
+		
+		tBox.setText("Username");
+		
+		passTBox = new JTextField();
+		passTBox.setLocation(250, 175);
+		passTBox.setSize(200, 25);
+		passTBox.setText("Password");
+		
+		JButton logInButton = new JButton();
+		logInButton.setText("Log In");
+		logInButton.setSize(100, 25);
+		logInButton.setLocation(100, 137);
+		
+		logInButton.addActionListener(lIListener);
+		createButton.addActionListener(createListener);
+		
+		panel.add(tBox);
+		panel.add(passTBox);
+		panel.add(logInButton);
+		panel.add(createButton);
+		
+		repaint();
+		revalidate();
+	}
+	
+	public void createAccountForm() {
+		panel.removeAll();
+		
+		ActionListener create = new createAccountListener();
+		
+		tBox.setText("Username");
+		
+		passTBox = new JTextField();
+		passTBox.setLocation(250, 175);
+		passTBox.setSize(200, 25);
+		passTBox.setText("Password");
+		
+		JButton createButton = new JButton();
+		createButton.setText("Create");
+		createButton.setSize(100, 25);
+		createButton.setLocation(100, 300);
+	
+		createButton.addActionListener(create);
+		
+		panel.add(tBox);
+		panel.add(passTBox);
+		panel.add(createButton);
+		
+		repaint();
+		revalidate();
+	}
 
 	/**
 	 * Sets GUI attributes for start screen
@@ -39,7 +108,6 @@ public class GUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JButton load = new JButton();
-		load = new JButton();
 		load.setLocation(100, 100);
 		load.setSize(100, 25);
 		load.setText("Load");
@@ -198,7 +266,7 @@ public class GUI extends JFrame {
 			if (file.exists()) {
 				try {
 					db = new Database(tBox.getText());
-					displayApps();
+					logIn();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -206,6 +274,74 @@ public class GUI extends JFrame {
 			}
 			else { System.out.println("Invalid file"); }
 		}	
+	}
+	
+	private class logInListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			MessageDigest digest;
+			File file = new File("users.txt");
+			try {
+				digest = MessageDigest.getInstance("SHA-256");
+				byte[] userHash = digest.digest(tBox.getText().getBytes(StandardCharsets.UTF_8));
+				byte[] passHash = digest.digest(passTBox.getText().getBytes(StandardCharsets.UTF_8));
+				Scanner sc = new Scanner(file);
+				while (sc.hasNext()) {		
+					if (sc.next().equals(DatatypeConverter.printHexBinary(userHash)) &&
+							sc.next().equals(DatatypeConverter.printHexBinary(passHash)))
+						displayApps();
+					else 
+						JOptionPane.showMessageDialog(null, "Invalid Log in");
+				}
+				
+				sc.close();
+			} catch (NoSuchAlgorithmException | FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	private class createAccountFormListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			createAccountForm();
+		}
+		
+	}
+	
+	private class createAccountListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			if (!tBox.getText().equals("") && !tBox.getText().equals("")) {
+				try {
+					PrintWriter writer = new PrintWriter("users.txt", "UTF-8");
+					MessageDigest digest = MessageDigest.getInstance("SHA-256");
+					byte[] userHash = digest.digest(tBox.getText().getBytes(StandardCharsets.UTF_8));
+					byte[] passHash = digest.digest(passTBox.getText().getBytes(StandardCharsets.UTF_8));
+					writer.println(DatatypeConverter.printHexBinary(userHash));
+					writer.println(DatatypeConverter.printHexBinary(passHash));
+					writer.close();
+					logIn();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
 	
 	private class filterListener implements ActionListener {

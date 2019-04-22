@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Database {
 	private ArrayList<Application> apps;
+	private String fileName;
 	
 	/**
 	 * Create empty database
@@ -21,6 +22,7 @@ public class Database {
 	 */
 	public Database(String file) throws FileNotFoundException {
 		apps = new ArrayList<Application>();
+		fileName = file.toString();
 		load(file);
 	}
 	
@@ -86,4 +88,6 @@ public class Database {
 		}
 		return data;
 	}
+	
+	public String getDatabaseName() { return fileName; }
 }
