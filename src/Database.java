@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Database {
 	private ArrayList<Application> apps;
+	private String fileName;
 	
 	/**
 	 * Create empty database
@@ -15,16 +16,19 @@ public class Database {
 	
 	/**
 	 * Create database from file
+	 * 
 	 * @param file file to load database from
 	 * @throws FileNotFoundException
 	 */
 	public Database(String file) throws FileNotFoundException {
 		apps = new ArrayList<Application>();
+		fileName = file.toString();
 		load(file);
 	}
 	
 	/**
 	 * Loads database from file 
+	 * 
 	 * @param filePath path of file
 	 * @throws FileNotFoundException
 	 */
@@ -43,6 +47,7 @@ public class Database {
 	
 	/**
 	 * Attempts to add entry to database
+	 * 
 	 * @param name name of application
 	 * @param company name of company
 	 * @return whether adding was successful
@@ -60,6 +65,7 @@ public class Database {
 	
 	/**
 	 * Deletes entry from database
+	 * 
 	 * @param name name of application to delete
 	 * @return whether application is able to be deleted
 	 */
@@ -67,6 +73,10 @@ public class Database {
 		apps.remove(new Application(name, company));
 	}
 	
+	/**
+	 * Getter for all Applications in database
+	 * @return ArrayList of all Applications
+	 */
 	public ArrayList<Application> getApps() { return apps; }
 	
 	@Override
@@ -78,4 +88,6 @@ public class Database {
 		}
 		return data;
 	}
+	
+	public String getDatabaseName() { return fileName; }
 }
