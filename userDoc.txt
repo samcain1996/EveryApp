@@ -1,0 +1,9 @@
+Laura Jacob -- 4/29/19 -- Week 7 delivs
+
+User documentation:
+
+User is required to log into the system. User with the matching authentification will be able to view the apps, sort them, and search for a certain app or type of apps. Users can leave comments on each of the apps and the length of the comment is stored.
+
+If the user has Administrative access, they will be able to do the same things as a General User. Admins can see the requests for apps to be stored in the database, and they can choose to accept or reject those requests.
+
+If the user has Moderator access, they will be able to do the same things as a General User. Moderators can view the comments that General Users leave and can choose to delete comments to moderate the system.
