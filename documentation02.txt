@@ -1,0 +1,13 @@
+Laura Jacob -- 4/29/19 -- Week 7 Delivs
+
+In addition to Iteration I's documentation:
+
+In the src folder, we now have a tester class for the Application.java file called ApplicationTest.java as well as ApplicationTester.java which has the JUnit bare bones for our unit testing.
+In the ApplicationTest.java, we have a void setUp() method which throws an exception, as well as, three tester methods (testApplication1/2/3). The first method checks to see if the new application is the same as one which already exists in the system. The second method sets the name and the company of the application. The third method gets and adds comments to the application along with the size.
+In the ApplicationTester class JUnit is imported and a new application is tested using the TestName and TestCompany variables and creates a string.
+
+In the src folder we also have a tester class for the Database.java file called DatabaseTest.java as well as a unit testing class called DatabaseTester.java which uses JUnit.
+In the DatabaseTest.java, we have a testGetApps() method to check if they're null, and a testAdd() method which checks the length and increases the length when called in addition to a setUp() method. There is also a testGetApps2() method which specifies what to do if the same item is added or a different item is added. There is a testDelete() method as well as 4 methods for testing the file. See comments for each method.
+In the JUnit testing class DatabaseTester, a new database is created.
+
+Log In features have been added to our 4 original files: Application.java, Database.java, GUI.java and main.java 
