@@ -20,7 +20,7 @@ public class GUI extends JFrame {
 	private JPanel panel; // Panel to add components to
 	private JTextField tBox1, tBox2; // Multipurpose textbox
 	private JList<Application> list; // List containing all apps
-	private JList<String> commentList;
+	private JList<String> commentList, requestList;
 	private DefaultListModel<Application> model;
 	private DefaultListModel<String> comments;
 	private Database db;
@@ -49,10 +49,9 @@ public class GUI extends JFrame {
 
 		tBox1.setText("Username");
 
-		JTextField passTBox = new JTextField();
-		passTBox.setLocation(250, 175);
-		passTBox.setSize(200, 25);
-		passTBox.setText("Password");
+		tBox2.setLocation(250, 175);
+		tBox2.setSize(200, 25);
+		tBox2.setText("Password");
 
 		JButton logInButton = new JButton();
 		logInButton.setText("Log In");
@@ -66,7 +65,7 @@ public class GUI extends JFrame {
 		createButton.addActionListener(createListener);
 
 		panel.add(tBox1);
-		panel.add(passTBox);
+		panel.add(tBox2);
 		panel.add(logInButton);
 		panel.add(createButton);
 
@@ -79,8 +78,6 @@ public class GUI extends JFrame {
 
 		tBox1.setText("Username");
 
-		tBox2.setLocation(250, 175);
-		tBox2.setSize(200, 25);
 		tBox2.setText("Password");
 
 		JButton createButton = new JButton();
@@ -247,7 +244,7 @@ public class GUI extends JFrame {
 			requestsModel.addElement(request);
 		}
 		
-		JList<String> requestList = new JList<String>(requestsModel);
+		requestList = new JList<String>(requestsModel);
 		requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		JScrollPane scrollList = new JScrollPane(requestList);
@@ -255,7 +252,21 @@ public class GUI extends JFrame {
 		scrollList.setSize(500, 300);
 		scrollList.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
+		ActionListener acceptListener = new acceptRequestListener();
+		
+		JButton acceptRequest = new JButton();
+		acceptRequest.setSize(200, 25);
+		acceptRequest.setLocation(210, 400);
+		acceptRequest.setText("Accept");
+		acceptRequest.addActionListener(acceptListener);
+		
+		JButton denyRequest = new JButton();
+		denyRequest.setSize(200, 25);
+		denyRequest.setLocation(420, 400);
+		
 		panel.add(scrollList);
+		panel.add(acceptRequest);
+		panel.add(denyRequest);
 		panel.add(back);
 		
 		revalidate();
@@ -400,8 +411,10 @@ public class GUI extends JFrame {
 				Scanner sc = new Scanner(file);
 				boolean logInFound = false;
 				while (sc.hasNext()) {
-					if (sc.next().equals(DatatypeConverter.printHexBinary(userHash)) && sc.hasNext()
-							&& sc.next().equals(DatatypeConverter.printHexBinary(passHash)))
+					String a = sc.next(), b = sc.next();
+					String a1 = DatatypeConverter.printHexBinary(userHash);
+					String b1 = DatatypeConverter.printHexBinary(passHash);
+					if (a.equals(a1) && b.equals(b1))
 						logInFound = true;
 				}
 				if (logInFound) {
@@ -564,6 +577,55 @@ public class GUI extends JFrame {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}
+		
+	}
+	
+	private class acceptRequestListener implements ActionListener {
+
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			String app = requestList.getSelectedValue();
+			System.out.println(app);
+			ArrayList<String> newList = new ArrayList<String>();
+			File file = new File("requests.txt");
+			try {
+				Scanner reader = new Scanner(file);
+				while (reader.hasNextLine()) {
+					String entry = reader.nextLine();
+					if (!entry.equals(app)) {
+						newList.add(entry);
+					}
+				}
+				reader.close();
+				PrintWriter writer = new PrintWriter("requests.txt");
+				for (String entry : newList) {
+					writer.println(entry);
+				}
+				writer.close();
+				db.add((app.substring(0, app.indexOf(' '))), app.substring(app.indexOf(' '), app.lastIndexOf(' ')));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	private class denyRequestListener implements ActionListener {
+
+		ArrayList<String> requests = new ArrayList<String>();
+		String app;
+		
+		public denyRequestListener(ArrayList<String> requests, String app) {
+			this.requests = requests;
+			this.app = app;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
 		}
 		
 	}
