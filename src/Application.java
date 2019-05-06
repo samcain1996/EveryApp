@@ -1,3 +1,6 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Application {
@@ -18,6 +21,7 @@ public class Application {
 	/**
 	 * Adds a comment to the Application
 	 * @param comment comment to be added
+	 * @throws FileNotFoundException 
 	 */
 	public void addComment(String comment) {
 		comments.add(comment);

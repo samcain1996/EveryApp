@@ -1,7 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 public class Database {
 	private ArrayList<Application> apps;
@@ -71,6 +74,51 @@ public class Database {
 	 */
 	public void delete(String name, String company) {
 		apps.remove(new Application(name, company));
+	}
+	
+	private Application getApp(String name) {
+		Application returnApp = null;
+		for (Application app : apps) {
+			if (app.getName().equals(name)) {
+				returnApp = app;
+				break;
+			}
+		}
+		return returnApp;
+	}
+	
+	public void loadComments() {
+		File commentsFile = new File("comments.txt");
+		try {
+			Scanner reader = new Scanner(commentsFile);
+			while (reader.hasNext()) {
+				String appName = reader.nextLine();
+				getApp(appName).addComment(reader.nextLine());
+			}
+			reader.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "No comments to load");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void saveComments() {
+		try {
+			PrintWriter writer = new PrintWriter("comments.txt");
+			for (Application app : apps) {
+				for (String comment : app.getComments()) {
+					writer.println(app.getName());
+					writer.println(comment);
+				}
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
